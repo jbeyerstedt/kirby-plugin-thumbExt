@@ -122,10 +122,12 @@ class img_srcset {
    * assembles the srcset string
    */
   private function srcset_string() {    
-    $result = "";
     foreach ($this->thumbs as $tag=>$thumb) {
-    
-      $result .= $thumb->result->url() . " " . $tag . " ";
+      if ($tag == "1x") { // first is different
+        $result = $thumb->result->url() . " " . $tag;
+      }else {
+        $result .= ", " . $thumb->result->url() . " " . $tag;
+      }
     }
     
     return $result;
