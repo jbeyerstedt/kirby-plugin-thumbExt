@@ -10,15 +10,15 @@
  * @author    Jannik Beyerstedt <jtByt.Pictures@gmail.com>
  * @link      http://jannikbeyerstedt.com
  * @copyright Jannik Beyerstedt
- * @license   http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license   http://www.gnu.org/licenses/gpl-3.0.txt GPLv3 License
  */
 function ThumbExt($obj, $options=array()) {
-  $img_tag = new img_srcset($obj, $options);
-  return $img_tag;
+  $thumb_tag = new thumb_srcset($obj, $options);
+  return $thumb_tag;
 }
 
 
-class img_srcset {
+class thumb_srcset {
   
   static public $defaults = array(
     'filename'    => '{safeName}-{hash}.{extension}',
@@ -27,12 +27,9 @@ class img_srcset {
   );
 
   public $sourcePath   = null;
-  public $results      = array();
-  public $thumbs       = array();
+  public $thumbs       = array(); // stores all thumb objects
   public $options      = array();
-  
-  public $debug       = "Hello World";
-  
+    
   /**
    * Constructor
    *
@@ -55,12 +52,13 @@ class img_srcset {
       $factor = floatval($desc);
       
       // only handle non 1x pixel density descriptors, 1x is handeled above as default.
-      if ($factor != 1) {        
-        // include the factor in the params for the new object
-        $this->options['factor'] = $factor;
-        $this->options['pxDensity'] = $desc;
+      if ($factor != 1) {
+        // copy all options and adjust the width and height with the custom factor
+        $scaledOptions = $this->options;
+        $scaledOptions['width'] = $this->options['width']*$factor;
+        $scaledOptions['height'] = $this->options['height']*$factor;
         
-        $this->thumbs[$desc] = new ThumbSrc($this->sourcePath, $this->options);
+        $this->thumbs[$desc] = new Thumb($this->sourcePath, $scaledOptions);
       }
     }
   
@@ -131,75 +129,6 @@ class img_srcset {
     }
     
     return $result;
-  }
-  
-};
-
-
-/**
- * ThumbSrc
- * Extends the Thumb class with another filename pattern and factorised width and height (for srcset)
- *
- * @package   Kirby Plugins
- * @author    Jannik Beyerstedt <jtByt.Pictures@gmail.com>
- * @link      http://jannikbeyerstedt.com
- * @copyright Jannik Beyerstedt
- * @license   http://www.opensource.org/licenses/mit-license.php MIT License
- */
-class ThumbSrc extends Thumb {
-  
-  public function __construct($source, $params = array()) {
-
-    $this->source  = $this->result = is_a($source, 'Media') ? $source : new Media($source);
-    $this->options = array_merge(static::$defaults, $this->params($params));
-    
-    // extend original Thumb class by modified height and width
-    $this->options['width'] = $this->options['width']*$this->options['factor'];
-    $this->options['height'] = $this->options['height']*$this->options['factor'];
-    
-    $this->destination = new Obj();
-    $this->destination->filename = str::template($this->options['filenameSrc'], array(
-      'extension'    => $this->source->extension(),
-      'name'         => $this->source->name(),
-      'pxDensity'    => $this->options['pxDensity'], // extended for another name pattern
-      'filename'     => $this->source->filename(),
-      'safeName'     => f::safeName($this->source->name()),
-      'safeFilename' => f::safeName($this->source->name()) . '.' . $this->extension(),
-      'width'        => $this->options['width'],
-      'height'       => $this->options['height'],
-      'hash'         => md5($this->source->root() . $this->settingsIdentifier()),
-    ));
-
-    $this->destination->url  = $this->options['url'] . '/' . $this->destination->filename;
-    $this->destination->root = $this->options['root'] . DS . $this->destination->filename;
-
-    // don't create the thumbnail if it's not necessary
-    if($this->isObsolete()) return;
-
-    // don't create the thumbnail if it exists
-    if(!$this->isThere()) {
-
-      // check for a valid image
-      if(!$this->source->exists() or $this->source->type() != 'image') {
-        throw new Error('The given image is invalid', static::ERROR_INVALID_IMAGE);
-      }
-
-      // check for a valid driver
-      if(!array_key_exists($this->options['driver'], static::$drivers)) {
-        throw new Error('Invalid thumbnail driver', static::ERROR_INVALID_DRIVER);
-      }
-
-      // create the thumbnail
-      $this->create();
-
-      // check if creating the thumbnail failed
-      if(!file_exists($this->destination->root)) return;
-
-    }
-
-    // create the result object
-    $this->result = new Media($this->destination->root, $this->destination->url);
-
   }
   
 };
