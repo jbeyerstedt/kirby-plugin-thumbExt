@@ -21,8 +21,6 @@ function ThumbExt($obj, $options=array()) {
 class thumb_srcset {
   
   static public $defaults = array(
-    'filename'    => '{safeName}-{hash}.{extension}',
-    'filenameSrc' => '{safeName}@{pxDensity}-{hash}.{extension}',
     'srcset'      => '1x, 2x'
   );
 
@@ -37,8 +35,6 @@ class thumb_srcset {
    * @param array $params
    */
   public function __construct($source, $params = array()) {
-    
-//    $this->source  = $this->result = is_a($source, 'Media') ? $source : new Media($source);
     $this->sourcePath  = $source;
     $this->options = array_merge(static::$defaults, $this->params($params));
     
@@ -55,8 +51,13 @@ class thumb_srcset {
       if ($factor != 1) {
         // copy all options and adjust the width and height with the custom factor
         $scaledOptions = $this->options;
-        $scaledOptions['width'] = $this->options['width']*$factor;
-        $scaledOptions['height'] = $this->options['height']*$factor;
+        if (isset($this->options['width'])) {
+          $scaledOptions['width'] = $this->options['width']*$factor;
+        }elseif (isset($this->options['height'])) {
+          $scaledOptions['height'] = $this->options['height']*$factor;
+        }else {
+          throw new Error('No width or height value set');
+        }
         
         $this->thumbs[$desc] = new Thumb($this->sourcePath, $scaledOptions);
       }
