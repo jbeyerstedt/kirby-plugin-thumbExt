@@ -51,10 +51,11 @@ class thumb_srcset {
       if ($factor != 1) {
         // copy all options and adjust the width and height with the custom factor
         $scaledOptions = $this->options;
-        if (isset($this->options['width'])) {
+        if (isset($this->options['width'])) { // width must be set every time! no height alone!
           $scaledOptions['width'] = $this->options['width']*$factor;
-        }elseif (isset($this->options['height'])) {
-          $scaledOptions['height'] = $this->options['height']*$factor;
+          if (isset($this->options['height'])) {
+            $scaledOptions['height'] = $this->options['height']*$factor;
+          }
         }else {
           throw new Error('No width or height value set');
         }
