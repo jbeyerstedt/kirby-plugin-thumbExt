@@ -3,7 +3,9 @@ by jtByt.Pictures, Jannik Beyerstedt from Hamburg, Germany
 [jannik.beyerstedt.de](http://jannik.beyerstedt.de) | [Github](https://github.com/jbeyerstedt)  
 
 
-## get kirbytext without the sorrounding p-tags
+## get a thumbnail with srcset and inline image size
+
+This plugin extends the thumb class of kirby 2 with some nice additions regarding the srcset attribute for devices with higher pixel density. It also adds the thumbnails width and height to the img tag, so that the layout is displayed correctly even if the content is not loaded completely. I needed this for my masonry-style image gallery.
 
 #### note:
 This is only tested with kirby 2!
