@@ -20,6 +20,3 @@ use it in your templates the same way as the "normal" thumb function:
 the attributes are the same as the standard thumb function, but I´ve added:
 
 - srcset: string (with the pixel density descriptors, seperated by commas)
-- filenameSrc: rule (for the filenames of the srcset files)  
-use the variable "pxDensity" for the pixel density descriptor string
-
