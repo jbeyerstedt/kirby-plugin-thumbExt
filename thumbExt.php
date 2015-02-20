@@ -21,7 +21,8 @@ function ThumbExt($obj, $options=array()) {
 class thumb_srcset {
   
   static public $defaults = array(
-    'srcset'      => '1x, 2x'
+    'srcset'      => '1x, 2x',
+    'inline-size' => true
   );
 
   public $sourcePath   = null;
@@ -101,14 +102,24 @@ class thumb_srcset {
    * @return string
    */
   public function tag($attr = array()) {
+    if ($this->options['inline-size']) {
+      return html::img($this->thumbs['1x']->result->url(), array_merge(array(
+        'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->sourcePath->name(),
+        'width'  => $this->thumbs['1x']->result->width(),
+        'height' => $this->thumbs['1x']->result->height(),
+        'class'  => isset($this->options['class']) ? $this->options['class'] : null,
+        'srcset' => $this->srcset_string(),
+      ), $attr));
+      
+    }else {
+      return html::img($this->thumbs['1x']->result->url(), array_merge(array(
+        'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->sourcePath->name(),
+        'class'  => isset($this->options['class']) ? $this->options['class'] : null,
+        'srcset' => $this->srcset_string(),
+      ), $attr));
+    }
     
-    return html::img($this->thumbs['1x']->result->url(), array_merge(array(
-      'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->sourcePath->name(),
-      'width'  => $this->thumbs['1x']->result->width(),
-      'height' => $this->thumbs['1x']->result->height(),
-      'class'  => isset($this->options['class']) ? $this->options['class'] : null,
-      'srcset' => $this->srcset_string(),
-    ), $attr));
+    
   }
   
   /**
