@@ -7,7 +7,7 @@
  * width descriptor should be another plugin, because those images mustn´t be auto generated 
  *
  * @package   Kirby Plugins
- * @author    Jannik Beyerstedt <jtByt.Pictures@gmail.com>
+ * @author    Jannik Beyerstedt <code@jannikbeyerstedt.de>
  * @link      http://jannikbeyerstedt.com
  * @copyright Jannik Beyerstedt
  * @license   http://www.gnu.org/licenses/gpl-3.0.txt GPLv3 License
