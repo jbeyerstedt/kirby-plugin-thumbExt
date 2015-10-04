@@ -4,7 +4,7 @@
  * ThumbExt
  * Extended thumbnail function with auto generated thumbnails for html5 srcset.
  * only the pixel density descriptor is supported!
- * width descriptor should be another plugin, because those images mustn´t be auto generated 
+ * width descriptor should be another plugin, because those images mustn´t be auto generated
  *
  * @package   Kirby Plugins
  * @author    Jannik Beyerstedt <code@jannikbeyerstedt.de>
@@ -19,7 +19,7 @@ function ThumbExt($obj, $options=array()) {
 
 
 class thumb_srcset {
-  
+
   static public $defaults = array(
     'srcset'      => '1x, 2x',
     'inline-size' => true,
@@ -29,7 +29,7 @@ class thumb_srcset {
   public $sourcePath   = null;
   public $thumbs       = array(); // stores all thumb objects
   public $options      = array();
-    
+
   /**
    * Constructor
    *
@@ -39,16 +39,16 @@ class thumb_srcset {
   public function __construct($source, $params = array()) {
     $this->sourcePath  = $source;
     $this->options = array_merge(static::$defaults, $this->params($params));
-    
+
     // decompose srcset descriptors
     $descriptors = array_map('trim',explode(',', $this->options['srcset']));
-    
+
     // handle default pixel density descriptor
     $this->thumbs['1x'] = new Thumb($this->sourcePath, $this->options);
-    
+
     foreach ($descriptors as $desc) {
       $factor = floatval($desc);
-      
+
       // only handle non 1x pixel density descriptors, 1x is handeled above as default.
       if ($factor != 1) {
         // copy all options and adjust the width and height with the custom factor
@@ -61,13 +61,13 @@ class thumb_srcset {
         }else {
           throw new Error('No width or height value set');
         }
-        
+
         $this->thumbs[$desc] = new Thumb($this->sourcePath, $scaledOptions);
       }
     }
-  
+
   }
-  
+
   /**
    * Returns the source media object
    *
@@ -76,7 +76,7 @@ class thumb_srcset {
   public function source() {
     return $this->source;
   }
-  
+
   /**
    * Makes it possible to pass a string of params
    * which is shorter and more convenient than
@@ -95,7 +95,7 @@ class thumb_srcset {
     }
     return $result;
   }
-  
+
   /**
    * Generates and returns the full html tag for the thumbnail
    *
@@ -111,10 +111,10 @@ class thumb_srcset {
         'class'  => isset($this->options['class']) ? $this->options['class'] : null,
         'srcset' => $this->srcset_string(),
       ), $attr));
-      
+
     }else if($this->options['srcset-only']){
       return $this->srcset_string();
-      
+
     }else{
       return html::img($this->thumbs['1x']->result->url(), array_merge(array(
         'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->sourcePath->name(),
@@ -122,21 +122,21 @@ class thumb_srcset {
         'srcset' => $this->srcset_string(),
       ), $attr));
     }
-    
-    
+
+
   }
-  
+
   /**
    * Makes it possible to echo the entire object
    */
   public function __toString() {
     return $this->tag();
   }
-  
+
   /**
    * assembles the srcset string
    */
-  private function srcset_string() {    
+  private function srcset_string() {
     foreach ($this->thumbs as $tag=>$thumb) {
       if ($tag == "1x") { // first is different
         $result = $thumb->result->url() . " " . $tag;
@@ -144,8 +144,8 @@ class thumb_srcset {
         $result .= ", " . $thumb->result->url() . " " . $tag;
       }
     }
-    
+
     return $result;
   }
-  
+
 };
