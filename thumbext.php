@@ -44,7 +44,7 @@ class thumb_srcset {
     $descriptors = array_map('trim',explode(',', $this->options['srcset']));
 
     // handle default pixel density descriptor
-    $this->thumbs['1x'] = new Thumb($this->sourcePath, $this->options);
+    $this->thumbs['1x'] = Thumb($this->sourcePath, $this->options);
 
     foreach ($descriptors as $desc) {
       $factor = floatval($desc);
@@ -62,7 +62,7 @@ class thumb_srcset {
           throw new Error('No width or height value set');
         }
 
-        $this->thumbs[$desc] = new Thumb($this->sourcePath, $scaledOptions);
+        $this->thumbs[$desc] = Thumb($this->sourcePath, $scaledOptions);
       }
     }
 
@@ -104,10 +104,10 @@ class thumb_srcset {
    */
   public function tag($attr = array()) {
     if ($this->options['inline-size'] && !$this->options['srcset-only']) { //if srcset-only, then no inline-size possible
-      return html::img($this->thumbs['1x']->result->url(), array_merge(array(
+      return html::img($this->thumbs['1x']->url(), array_merge(array(
         'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->sourcePath->name(),
-        'width'  => $this->thumbs['1x']->result->width(),
-        'height' => $this->thumbs['1x']->result->height(),
+        'width'  => $this->thumbs['1x']->width(),
+        'height' => $this->thumbs['1x']->height(),
         'class'  => isset($this->options['class']) ? $this->options['class'] : null,
         'srcset' => $this->srcset_string(),
       ), $attr));
@@ -116,7 +116,7 @@ class thumb_srcset {
       return $this->srcset_string();
 
     }else{
-      return html::img($this->thumbs['1x']->result->url(), array_merge(array(
+      return html::img($this->thumbs['1x']->url(), array_merge(array(
         'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->sourcePath->name(),
         'class'  => isset($this->options['class']) ? $this->options['class'] : null,
         'srcset' => $this->srcset_string(),
@@ -139,9 +139,9 @@ class thumb_srcset {
   private function srcset_string() {
     foreach ($this->thumbs as $tag=>$thumb) {
       if ($tag == "1x") { // first is different
-        $result = $thumb->result->url() . " " . $tag;
+        $result = $thumb->url() . " " . $tag;
       }else {
-        $result .= ", " . $thumb->result->url() . " " . $tag;
+        $result .= ", " . $thumb->url() . " " . $tag;
       }
     }
 
