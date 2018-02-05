@@ -1,6 +1,8 @@
 {
   "name": "thumbext",
-  "description": "Kirby Plugin for thumbnails using srcset for different device resolutions",
-  "license": "GNU GPLv3",
-  "type": "kirby-plugin"
+  "description": "Kirby Plugin for thumbnails with srcset for different device resolutions",
+  "author": "Jannik Beyerstedt <code@jannikbeyerstedt.de>",
+  "version": "1.0.1",
+  "type": "kirby-plugin",
+  "license": "GNU GPLv3"
 }
