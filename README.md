@@ -1,8 +1,13 @@
-# Kirby thumbExt Plugin
+# thumbExt Plugin for Kirby CMS v2
 by Jannik Beyerstedt from Hamburg, Germany  
 [jannikbeyerstedt.de](http://jannikbeyerstedt.de) | [Github](https://github.com/jbeyerstedt)  
 **license:** GNU GPL v3  
 **version:** v1.0.1
+
+## Notice for Kirby 3
+Kirby 3.1.0 introduced the [$file->srcset()](https://getkirby.com/docs/reference/objects/file/srcset) method, which has all the `srcset` functionality, somebody could want.
+Therefore I will not adapt this plugin for Kirby 3.
+
 
 ## Introduction
 **Kirby Plugin for thumbnails with srcset for different device resolutions**
